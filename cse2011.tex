@@ -1,9 +1,10 @@
 \documentclass{beamer}
 \usepackage[utf8]{inputenc}
-\usepackage{minted}
+%\usepackage{minted}
 \usepackage{amsmath}
 \usepackage{fancyvrb}
 \usepackage{xspace}
+\usepackage{listings}
 \usepackage[3D]{movie15}
 \usefonttheme{structurebold}
 \mode<presentation>
@@ -62,46 +63,69 @@
 \pgfdeclareimage[height=0.5cm]{corps_logo}{corps_logo}
 \logo{\pgfuseimage{corps_logo}}
 
-\AtBeginSection[]
-{
-  \begin{frame}
-    \tableofcontents[currentsection]
-  \end{frame}
-}
+%\AtBeginSection[]
+%{
+%  \begin{frame}
+%    \tableofcontents[currentsection]
+%  \end{frame}
+%}
+
+%\AtBeginSubsection[]
+%{
+%  \begin{frame}<beamer>
+%    \frametitle{Outline}
+%    \tableofcontents[currentsection,currentsubsection]
+%  \end{frame}
+%}
 
 \newcommand{\Cpp}{C\protect\raisebox{.18ex}{++}\xspace}
 
 \begin{document}
+
 \begin{frame}
   \titlepage
 \end{frame}
 
-\section*{Outline}
 \begin{frame}
   \frametitle{Outline}
   \tableofcontents
 \end{frame}
 
-% --- Overview ---
-
 \section{Overview}
+
 \begin{frame}
-\frt{What is Proteus}
+\frt{What is Proteus?}
 \bit
 \item Proteus is a Python package for rapidly developing computer models and numerical methods.
 \item The package contains a collection of modules implemented in C,C++,Fortran, and Python.
-\item The implementation uses standard
-  software engineering practices:  object-oriented programming, loose
-  coupling, iterative/incremental programming, ``literate''
-  programming.
-\item A strong boundary is maintained between physics
-  implementation and numerical methods implementation (loose
-  coupling).
-\item Has a layered API for model implementation. Highly
-  optimized models for specific/detailed physics can be implemented by
-  deriving from more generic models (iterative programming).
-\item Contains ``wrapper'' modules for a wide variety of 3rd party libraries (ADH, PETSc, triangle, tetgen,...)
-\eit
+\item The implementation uses standard software engineering practices:
+  object-oriented programming, loose coupling, iterative/incremental
+  programming, ``literate'' programming.
+\item A strong boundary is maintained between physics implementation
+  and numerical methods implementation (loose coupling).
+\item Has a layered API for model implementation. Highly optimized
+  models for specific/detailed physics can be implemented by deriving
+  from more generic models (iterative programming).
+\item Contains ``wrapper'' modules for a wide variety of 3rd party
+  libraries (ADH, PETSc, triangle, tetgen,...)  \eit
+\end{frame}
+
+\begin{frame}
+\frametitle{History of Proteus}
+\begin{itemize}
+\item USACE begin development on the ADaptive Hydraulics (ADH) code in
+  the 90's.
+\item ADH is a C library/executable implementing parallel,
+  $h$-adaptive, piecewise linear finite element methods for a variety
+  of single-phase flow and transport models.
+\item In 2006 we started two research projects focused on continuum
+  models of multi-phase flow at various scales.
+\item We decided to write a prototype for a new version of ADH with
+  new models and methods as part of the research on multi-phase flow.
+\item Desired characteristics of the prototype: multi-level,
+  multi-scale, multi-phase/component, variable-order,
+  variable-continuity, highly modular, and customizable.
+\end{itemize}
 \end{frame}
 
 %2
@@ -109,20 +133,25 @@
 \frt{Equations Solved}
 \bit
 \footnotesize
-\item 2D \& 3D incompressible Navier-Stokes (Unsteady/Steady, LES, RANS, VANS)
+\item 2D \& 3D incompressible Navier-Stokes (Unsteady/Steady, LES,
+  RANS, VANS)
 \item 2D diffusive wave (overland flow)
 \item 2D shallow water
-\item 2D \& 3D two-phase incompressible, immiscible flow (hybrid VOF/level set formulation with LES, etc.)
+\item 2D \& 3D two-phase incompressible, immiscible flow (hybrid
+  VOF/level set formulation with LES, etc.)
 \item 2D \& 3D saturated groundwater
-\item 2D \& 3D Richards' equation (variably saturated groundwater, various constitutive models)
-\item 2D \& 3D two-phase flow in porous media (continuum mixture formulation, incompressible or compressible)
-\item 2D \& 3D density-dependent groundwater flow and salinity transport
+\item 2D \& 3D Richards' equation (variably saturated groundwater,
+  various constitutive models)
+\item 2D \& 3D two-phase flow in porous media (continuum mixture
+  formulation, incompressible or compressible)
+\item 2D \& 3D density-dependent groundwater flow and salinity
+  transport
 \item 2D \& 3D eikonal equation (signed distance calculations)
 \item 2D \& 3D linear elasticity
 \item 3D elastoplastic deformation (levee stability, Mohr-Coulomb material)
 \item 2D \& 3D 6DOF solid/air/water interaction
-\item 1D,2D,\& 3D Poisson, Burgers, linear/nonlinear ADRE, Stokes, etc.
-\eit
+\item 1D,2D,\& 3D Poisson, Burgers, linear/nonlinear ADRE, Stokes,
+  etc.  \eit
 \end{frame}
 
 %3 
@@ -139,18 +168,27 @@
 \frametitle{Verified Numerics}
 \bit
 \footnotesize
-\item Continuous linear and quadratic polynomial spaces ($C^0 P^1$ and $C^0 P^2$) on simplicial elements (intervals, triangles, tetrahedra) with nodal (Lagrange) basis
-\item Continuous tensor product spaces ($C^0 Q^k$) on hexahedra with nodal basis
-\item Discontinuous complete polynomial spaces ($C^{-1} P^k$) on simplicial elements with monomial basis
-\item $P^1$ non-conforming simplicial elements (equivalent to Raviart-Thomas mixed element)
-\item Eulerian-Lagrangian Localized Adjoint Methods (ELLAMs) for advection-dominated processes 
-\item Locally discontinuous Galerkin mixed elements with static condensation
+\item Continuous linear and quadratic polynomial spaces ($C^0 P^1$ and
+  $C^0 P^2$) on simplicial elements (intervals, triangles, tetrahedra)
+  with nodal (Lagrange) basis
+\item Continuous tensor product spaces ($C^0 Q^k$) on hexahedra with
+  nodal basis
+\item Discontinuous complete polynomial spaces ($C^{-1} P^k$) on
+  simplicial elements with monomial basis
+\item $P^1$ non-conforming simplicial elements (equivalent to
+  Raviart-Thomas mixed element)
+\item Eulerian-Lagrangian Localized Adjoint Methods (ELLAMs) for
+  advection-dominated processes
+\item Locally discontinuous Galerkin mixed elements with static
+  condensation
 \item SIPG/NIPG/IIPG primal discontinuous elements
 \item Residual-based variational multiscale methods (RBVMS)
-\item Analytical Riemann solvers (numerical fluxes) for linear advection, two-phase flow in porous media, and shallow water
-\item Approximate Riemann solvers: Harten-Lax-van Leer (SWE), Rusanov (two-phase flow), Cheng-Shu (Hamilton-Jacobi)
-\item Velocity post-processing to enforce element-wise (local) conservation
-\eit
+\item Analytical Riemann solvers (numerical fluxes) for linear
+  advection, two-phase flow in porous media, and shallow water
+\item Approximate Riemann solvers: Harten-Lax-van Leer (SWE), Rusanov
+  (two-phase flow), Cheng-Shu (Hamilton-Jacobi)
+\item Velocity post-processing to enforce element-wise (local)
+  conservation \eit
 \end{frame}
 
 %6
@@ -209,293 +247,155 @@
 
 \item A conservative level set method for variable-order
   approximations and unstructured meshes. C. E. Kees, I. Akkerman,
-  M. W. Farthing, and Y. Bazilevs (2010) {\em Journal of Computational
-    Physics}, In Press.
+  M. W. Farthing, and Y. Bazilevs (2011) {\em Journal of Computational
+    Physics}, doi:10.1016/j.jcp.2011.02.030.
 \eit
 \end{frame}
 
-%% \begin{frame}
-%%   \frametitle{What is \textbf{petsc4py}?}  
+\section{Physics API}
 
-%%   Python bindings for \textbf{PETSc}, the \emph{Portable Extensible
-%%     Toolkit for Scientific Computation}.  
-  
-%%   \bigskip
- 
-%%   A \emph{good friend} of \textbf{petsc4py} is:
-%%   \begin{itemize}
-%%   \item \textbf{mpi4py}: Python bindings for \textbf{MPI}, the
-%%     \emph{Message Passing Interface}.
-%%   \end{itemize}
-%%   \medskip
-%%   Other two projects depend on petsc4py:
-%%   \begin{itemize}
-%%   \item \textbf{slepc4py}: Python bindings for \textbf{SLEPc}, the
-%%     \emph{Scalable Library for Eigenvalue Problem Computations}.
-%%   \item \textbf{tao4py}: Python bindings for \textbf{TAO}, the
-%%     \emph{Toolkit for Advanced Optimization}.
-%%   \end{itemize}
-%% \end{frame}
+\begin{frame}
+\frametitle{Some Characteristics of Popular Math Software}
+\begin{itemize}
+\item Directed at an abstract formulation covering an important class
+  of problems: $A \vec x = \vec b$, $\vec F(t,\vec y, \vec y') = 0$
+\item Have multiple layers of interfaces: \texttt{dgbsv} (simple
+  interface), \texttt{dgbtrf} + \texttt{dgbtrs} (computational
+  interface)
+\item Use robust and accurate numerics: LU with partial pivoting, BDF
+  methods.
+\item Some separation between problem/data description and numerics
+  (PetscMat,PetscKSP).
+\end{itemize}
+\end{frame}
 
-%% \begin{frame}
-%%   \frametitle{Implementation}
-%%   Implemented with Cython \url{http://www.cython.org}
-%%   \begin{itemize}
-%%   \item Code base far easier to write, maintain, and extend.
-%%   \item Faster than other solutions (mixed Python and C codes).
-%%   \item Easier to cross language boundaries (reuse C/\Cpp/Fortran).
-%%   \end{itemize}
-%% \end{frame}
+\begin{frame}
+\frametitle{Popular Modeling Toolkit for PDE's}
 
-%% \begin{frame}
-%%   \frametitle{Implementation - Cython [1]}
-%%   \small\inputminted[firstline=1]{cython}{cython.pxi}
-%% \end{frame}
-%% \begin{frame}
-%%   \frametitle{Implementation - Cython [2]}
-%%   \small\inputminted[firstline=3]{cython}{cython.pyx}
-%% \end{frame}
+\begin{itemize}
+\item ``The COMSOL \begin{footnotesize}multiphysics simulation
+  environment facilitates all steps in the modeling process: defining
+  your geometry, specifying your physics, meshing, solving and then
+  post-processing your results.\end{footnotesize}''
 
-%% \begin{frame}
-%%   \frametitle{Features -- PETSc components}
-%%   \begin{itemize}
-%%   \item \textbf{Index Sets}: permutations, indexing into vectors, renumbering.
-%%   \item \textbf{Vectors}: sequential and distributed.
-%%   \item \textbf{Matrices}: sequential and distributed, sparse and dense.
-%%   \item \textbf{Distributed Arrays}: regular grid-based problems.
-%%   \item \textbf{Linear Solvers}: Krylov subspace methods.
-%%   \item \textbf{Preconditioners}: sparse direct solvers, multigrid
-%%   \item \textbf{Nonlinear Solvers}: line search, trust region, matrix-free.
-%%   \item \textbf{Timesteppers}: time-dependent, linear and nonlinear PDE's.
-%%   \end{itemize}
-%% \end{frame}
+\item ``FEniCS \begin{footnotesize}is free software for automated
+  solution of differential equations. We provide software tools for
+  working with computational meshes, finite element variational
+  formulations of PDEs, ODE solvers and linear
+  algebra.\end{footnotesize}''
 
-%% \begin{frame}
-%%   \frametitle{Features -- Interoperability}
-%%   Support for wrapping other PETSc-based codes.
-%%   \begin{itemize}
-%%   \item You can use \textbf{Cython} 
-%%     (\texttt{from petsc4py {\bf cimport} PETSc}).
-%%   \item You can use \textbf{SWIG} (\textsl{typemaps} provided).
-%%   \item You can use \textbf{F2Py} (\texttt{fortran} attribute).
-%%   \end{itemize}
-%%   \bigskip
-%%   (more on this later \ldots)
-%% \end{frame}
+\item ``...OpenFOAM \begin{footnotesize}is a flexible set of efficient
+  C++ modules. These are used to build a wealth of: solvers, to
+  simulate specific problems in engineering mechanics; utilities, to
+  perform pre- and post-processing tasks ranging from simple data
+  manipulations to visualisation and mesh processing; libraries, to
+  create toolboxes that are accessible to the solvers/utilities, such
+  as libraries of physical models.\end{footnotesize}''
+\end{itemize}
+\end{frame}
 
-%% \begin{frame}[fragile]
-%%   \frametitle{Features -- Easy installation}
-%% \begin{minted}{sh}
-%% $ virtualenv --no-site-packages ENV
-%% $ source ENV/bin/activate
+\begin{frame}
+\frametitle{Second Order Nonlinear, Heterogeneous Transport Systems}
+Our target problems are systems of nonlinear equations governing the
+transport of an abstract vector of components $u_j,j=1,\ldots,n_c$:
+\begin{equation*}
+\pd{m^i}{t} + \deld \pl \vec f^i - \sum_k \ten{a}^{ik} \grad \phi^k
+\pr + r^i + h^i(\grad u) = 0
+\end{equation*}
+where $i=1,\ldots n_c$. The large majority of models in hydrology are
+in this class.
+\end{frame}
 
-%% (ENV) $ pip install slepc4py
-%% Downloading/unpacking slepc4py
-%% Downloading/unpacking petsc4py (from slepc4py)
-%% Downloading/unpacking slepc (from slepc4py)
-%% Downloading/unpacking petsc (from petsc4py->slepc4py)
-%% Downloading/unpacking numpy (from petsc4py->slepc4py)
-%% Installing collected packages: numpy, petsc, petsc4py,
-%%                                slepc, slepc4py
-%% (ENV) $
-%% \end{minted}
-%% \end{frame}
+\begin{frame}
+\frametitle{Main elements of a computer model}
+\begin{itemize}
+\item A set of PDE's.
+\item A set of space-time domains.
+\item Initial/boundary conditions and material properties.
+\item Discretizations for PDE's and solvers for finite dimensional
+  systems.
+\item Auxiliary computations, post-processing schemes, visualization,
+  archiving,...
+\end{itemize}
+We divide these elements into the \alert{p-file} (problem description
+module), \alert{n-file} (numerics module), and \alert{batch} file.
+\end{frame}
 
-%% % --- Vectors & Matrices---
+\begin{frame}
+\frametitle{A simple example} For $(t,x,y) \in [0,T] \times [0,1]
+\times [0,1]$ find $u$ such that
+\begin{eqnarray*}
+(Mu)_t + \deld \sbl \vec B u- \ten{A} \grad u \sbr&=& 0 \\ u(0,x,y)
+  &=& 0 \\ u(t,x,0) &=& u(t,0,y) = 1 \\ u(t,x,1) &=& u(t,1,x) = 0
+  \\ M&=&1\\ \vec{B}&=&(1,1)\\ \ten{A}&=&0.001 \ten{I}
+\end{eqnarray*}
+\end{frame}
 
-%% \section{Vectors \& Matrices}
+\begin{frame}
+\frametitle{\texttt{ladr\_2d\_p.py}} \small
+\lstinputlisting{ladr_2d_p.py}
+\end{frame}
 
-%% \begin{frame}
-%%   \frametitle{Vectors (\texttt{Vec}) -- Conjugate Gradients Method}
-%%   \begin{columns}[t]
-%%     \begin{column}{.45\textwidth}
-%%       \tiny
-%%       \begin{equation*}
-%%         \begin{split}
-%%           & cg(A,x,b,i_{max},\epsilon): \\
-%%           & \quad i \Leftarrow 0 \\
-%%           & \quad r \Leftarrow b - A x \\
-%%           & \quad d \Leftarrow r \\
-%%           & \quad \delta_{0} \Leftarrow r^T r \\
-%%           & \quad \delta_{   } \Leftarrow \delta_{0} \\
-%%           & \quad \text{while}\;\; i < i_{max} \text{ and } \\
-%%           & \quad\quad\qquad  \delta_{   } > \delta_{0} \epsilon^2 \text{ do} :\\
-%%           & \quad\quad\quad  q \Leftarrow Ad \\
-%%           & \quad\quad\quad  \alpha \Leftarrow \frac{\delta_{   }}{d^T q} \\
-%%           & \quad\quad\quad  x \Leftarrow x + \alpha d\\
-%%           & \quad\quad\quad  r \Leftarrow r - \alpha q\\
-%%           & \quad\quad\quad  \delta_{old} \Leftarrow \delta_{   } \\
-%%           & \quad\quad\quad  \delta_{   } \Leftarrow r^T r \\
-%%           & \quad\quad\quad  \beta \Leftarrow \frac{\delta_{   }}{\delta_{old}} \\
-%%           & \quad\quad\quad  d \Leftarrow r + \beta d\\
-%%           & \quad\quad\quad  i \Leftarrow i + 1
-%%         \end{split}
-%%       \end{equation*}
-%%     \end{column}
-%%     \begin{column}{.45\textwidth}
-%%       \tiny\inputminted[linenos]{python}{petsc4py_vec.py}
-%%     \end{column}
-%%   \end{columns}
-%% \end{frame}
+\begin{frame}
+\frametitle{\texttt{ladr\_2d\_c0p1\_n.py}}
+\small
+\lstinputlisting{ladr_2d_c0p1_n.py}
+\end{frame}
 
-%% \begin{frame}
-%%   \frametitle{Matrices (\texttt{Mat}) [1]}
-%%   \small\inputminted[linenos]{python}{petsc4py_mat_1.py}
-%% \end{frame}
+\begin{frame}
+\frametitle{A multi-physics example}
+\small
+\lstinputlisting{twp_navier_stokes_sloshbox_2d_so.py}
+\end{frame}
 
-%% \begin{frame}
-%%   \frametitle{Matrices (\texttt{Mat}) [2]}
-%%   \small\inputminted[linenos]{python}{petsc4py_mat_2.py}
-%% \end{frame}
+\begin{frame}
+\frametitle{\texttt{adr.py}}
+\small
+\lstinputlisting[lastline=12]{adr.py}
+\end{frame}
 
-%% % --- Linear Solvers  ---
+\begin{frame}
+\frametitle{\texttt{adr.py, cont'd}}
+\small
+\lstinputlisting[firstline=13]{adr.py}
+\end{frame}
 
-%% \section{Linear Solvers}
+\section{Lessons Learned and Open Issues}
 
-%% \begin{frame}
-%%   \frametitle{Linear Solvers (\texttt{KSP+PC})}
-%%   \small\inputminted[linenos,firstline=3]{python}{petsc4py_ksp.py}
-%% \end{frame}
+\begin{frame}
+\frt{Design Mistakes}
+\begin{itemize}
+\item Coefficient storage dictionary layout is easy to use only in
+  Python.
+\item Optimized C and Fortran coefficient routines have (very ugly)
+  problem-specific interface.
+\item Optimized discretizations must use yet another interface.
+\end{itemize}
+\end{frame}
 
-%% % --- Nonlinear Solvers  ---
+\begin{frame}
+\frt{Lessons Learned}
+\begin{itemize}
+\item Error trapping and develop tools for physics should have been a
+  higher priority
+\item Tutorials and examples for physics should have been a higher
+  priority
+\item Config/build/distribute tools should have been a higher priority
+\end{itemize}
+\end{frame}
 
-%% \section{Nonlinear Solvers}
-
-%% \begin{frame}
-%%   \frametitle{Nonlinear Solvers (\texttt{SNES}) [1]}
-%%   \scriptsize\inputminted[linenos]{python}{petsc4py_snes_1.py}
-%% \end{frame}
-
-%% \begin{frame}
-%%   \frametitle{Nonlinear Solvers (\texttt{SNES}) [2]}
-%%   \small\inputminted[linenos]{python}{petsc4py_snes_2.py}
-%% \end{frame}
-
-%% % --- Interoperability ---
-
-%% \section{Interoperability}
-
-%% \begin{frame}
-%%   \frametitle{Interoperability -- \textbf{Cython}}
-%%   \scriptsize
-%%   \inputminted[linenos]{cython}{wrap_cython.pyx}
-%% \end{frame}
-
-%% \begin{frame}
-%%   \frametitle{Interoperability -- \textbf{SWIG}}
-%%   \small
-%%   \inputminted[linenos]{c}{wrap_swig.i}
-%% \end{frame}
-
-%% \begin{frame}
-%%   \frametitle{Interoperability -- \textbf{F2Py}}
-%%   \scriptsize
-%%   \inputminted[linenos]{fortran}{wrap_f2py.pyf}
-%% \end{frame}
-
-%% % --- Performance ---
-
-%% \section{Performance}
-
-%% \newcommand{\onehalf}{\frac{1}{2}}
-%% \newcommand{\pder}[2]{\ensuremath{\frac{\partial#1}{\partial#2}}}
-
-%% \begin{frame}
-%%   \frametitle{Performance}
-%%   Consider the following diffusive, unsteady, non-linear, scalar
-%%   problem in the unit cube $\Omega=(x,y,z)=(0,1)^3$
-%%   \begin{itemize}
-%%   \item PDE, boundary and initial conditions:
-%%     \begin{equation}
-%%       \begin{aligned}
-%%         \pder{\phi}{t}-\nabla \cdot \left(\kappa(\phi)\nabla \phi \right) &= G
-%%         ~~~\text{on $\Omega \times (0,T]$}\\
-%%         \pder{\phi}{\mathbf{n}} &= 0 
-%%         ~~~\text{at $\partial\Omega \times [0,T]$}\\
-%%         \phi &= \phi^0
-%%         ~~~\text{at $t=0$},
-%%       \end{aligned}
-%%     \end{equation}
-%%   \item Nonlinear diffusion and line source term:
-%%     \begin{equation} 
-%%       \begin{aligned}
-%%         \kappa(\phi)=
-%%         \begin{cases}
-%%           1 ~~~&\text{if } \phi \ge 0 \\
-%%           \frac{1}{1+\phi^2} ~~~&\text{if } \phi < 0
-%%         \end{cases}\\
-%%         G(x=\dfrac{1}{4},y=\frac{1}{4},\frac{1}{2}<z<1) = -300
-%%       \end{aligned}
-%%     \end{equation}
-%%   \end{itemize}
-%% \end{frame}
-
-%% \begin{frame}
-%%   \frametitle{Performance --Discretization}
-%% \begin{itemize}
-%% \item finite differences in space
-%% \item backward Euler in time
-%% \end{itemize}
-%% \vfill
-%% \begin{equation}
-%%   \frac{1}{\Delta t}(\phi^{n+1}_{i,j,k}-\phi^{n}_{i,j,k}) - 
-%%   L_{i,j,k}(\kappa,\phi^{n+1}) - G_{i,j,k} = 0 
-%% \end{equation}
-%% \begin{equation}
-%% \footnotesize
-%% \begin{split}
-%%     L_{i,j,k}(\kappa,\phi) = %\\
-%%      &\frac{\kappa[i-\onehalf]}{(\Delta x_1)^2}                \phi[i-1]%
-%%      -\frac{\kappa[i-\onehalf]+\kappa[i+\onehalf]}{(\Delta x_1)^2} \phi[0]%
-%%      +\frac{\kappa[i+\onehalf]}{(\Delta x_1)^2}               \phi[i+1] +\\
-%%     +&\frac{\kappa[j-\onehalf]}{(\Delta x_2)^2}               \phi[j-1]%
-%%      -\frac{\kappa[j-\onehalf]+\kappa[j+\onehalf]}{(\Delta x_2)^2} \phi[0]%
-%%      +\frac{\kappa[j+\onehalf]}{(\Delta x_2)^2}               \phi[j+1] +\\
-%%     +&\frac{\kappa[k-\onehalf]}{(\Delta x_3)^2}               \phi[k-1]%
-%%      -\frac{\kappa[k-\onehalf]+\kappa[k+\onehalf]}{(\Delta x_3)^2} \phi[0]%
-%%      +\frac{\kappa[k+\onehalf]}{(\Delta x_3)^2}               \phi[k+1]
-%% \end{split}
-%% \end{equation}
-%% (notation: %
-%% $[0]=(i,j,k)$, $[i\pm\frac{1}{2}]=(i\pm\frac{1}{2},j,k)$, %
-%% and so on)
-%% \end{frame}
-
-%% \begin{frame}
-%%   \frametitle{Performance -- Python+F90 versus C+F90}
-%%   Basically a measure of Python calling overhead \ldots
-%%   \begin{itemize}
-%%   \item equivalent Python and C codes for the drivers
-%%   \item common Fortran 90 code for the nonlinear residual
-%%   \item use matrix--free for the nonlinear problems
-%%   \end{itemize}
-%%   \begin{center}
-%%     \includegraphics[scale=0.4]{petsc4py_oh.pdf}
-%%   \end{center}
-%% \end{frame}
-
-
-%% % --- Closing ---
-
-%% \section*{Closing}
-
-%% \begin{frame}
-%%   \Large
-%%   Do not hesitate to ask for help \ldots 
-%%   \bigskip
-%%   \begin{itemize}
-%%   \item Mailing List: \email{petsc-users@mcs.anl.gov}
-%%   \item Mail\&Chat:   \email{dalcinl@gmail.com}
-%%   \item Project Page: \url{http://petsc4py.googlecode.com}
-%%   \end{itemize}
-%%   \bigskip
-%%   \begin{centering}
-%%     \Huge Thanks!\par
-%%   \end{centering}
-%% \end{frame}
+\begin{frame}
+\frt{Open Issues}
+\begin{itemize}
+\item A new physics API
+\item UFL generation capability 
+\item Config/build/dist tools
+\item Economics
+\item Social Psychology
+\end{itemize}
+\end{frame}
 
 \end{document}
-
 
 % Local Variables:
 % mode: latex
