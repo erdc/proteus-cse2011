@@ -5,13 +5,14 @@
 \usepackage{fancyvrb}
 \usepackage{xspace}
 \usepackage{listings}
+\usepackage{minted}
 \usepackage[3D]{movie15}
 \usefonttheme{structurebold}
 \mode<presentation>
 {
   \usetheme{default}
    \setbeamercolor{structure}{fg=black!70}
-  \setbeamercovered{invisible}
+  %\setbeamercovered{invisible}
   \setbeamerfont{title}{size=\large}
 }
 \usepackage[english]{babel}
@@ -78,17 +79,55 @@
 %  \end{frame}
 %}
 
+%\AtBeginSection[]
+%{
+%  \begin{frame}
+%    \tableofcontents[currentsection]
+%  \end{frame}
+%}
+
 \newcommand{\Cpp}{C\protect\raisebox{.18ex}{++}\xspace}
 
 \begin{document}
 
 \begin{frame}
-  \titlepage
+  \frametitle{Python Minisymposia}
+  \begin{itemize}
+  \item \alert{MS52: Python-based Software for Solving Partial Differential Equations - Part I (NOW)}
+  \item MS62: Python-based Software for Solving Partial Differential Equations - Part II (Tue/4:30/Sierra 2)
+  \item MS70: Python Software for Numerical Optimization (Wed/9:30/Sierra 2)
+  \item MS80: Python in Scientific Computing - Part I (Wed/2:00/Sierra 2)
+  \item MS89: Python in Scientific Computing - Part II (Wed/4:30/Sierra 2)
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
+  \titlepage
+\end{frame}
+
+\section*{Outline}
+
+\begin{frame}
+\frametitle{Acknowledgments}
+\begin{itemize}
+\item Lea Jenkins (Clemson)
+\item John Chrispell (Tulane)
+\item Tim Kelley and Scott Pope (NCSU)
+\item Clint Dawson, Serge Prudhomme, Steve Mattis, Tim Povich (UT/ICES)
+\item Yuri Bazilevs (UCSD)
+\item Ido Akkerman, Stacy Howington, Amanda Hines, John Peters (ERDC)
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
   \frametitle{Outline}
-  \tableofcontents
+  \begin{itemize}
+    \item Overview
+    \item Physics API
+    \item Lessons Learned
+  \end{itemize}
+  %\tableofcontents %this is invisible, can't seem to make it visible
 \end{frame}
 
 \section{Overview}
@@ -113,7 +152,7 @@
 \begin{frame}
 \frametitle{History of Proteus}
 \begin{itemize}
-\item USACE begin development on the ADaptive Hydraulics (ADH) code in
+\item USACE began development on the ADaptive Hydraulics (ADH) code in
   the 90's.
 \item ADH is a C library/executable implementing parallel,
   $h$-adaptive, piecewise linear finite element methods for a variety
@@ -192,9 +231,34 @@
 \end{frame}
 
 %6
+%% \begin{frame}
+%%   \frametitle{Verification and Validation Test Problems}
+%%   \begin{minipage}{0.5\textwidth}
+%%     \bit
+%%   \item Dam break experiments
+%%   \item Marin free surface flow/object experiment
+%%   \item Wigley hull tow tank experiment
+%%   \item Beach erosion board
+%%   \item Flow around a cylinder
+%%   \item Driven cavity
+%%   \item Rotating Gaussian
+%%   \item Advection in a vortex
+%%   \item Porous media, slope stability,...
+%%     %\item Poisseulle, Couette, and Decay of Vortex (low RE analytical solutions) 2D \& 3D
+%%     \eit
+%%   \end{minipage}\begin{minipage}{0.5\textwidth}
+%%     \begin{overlayarea}{\textwidth}{\textwidth}
+%%       \only<+>{\includemovie[controls,poster]{\textwidth}{\textwidth}{sloshbox2d.mov}}
+%%       %      \only<+>{\includemovie[controls,poster]{\textwidth}{\textwidth}{dambreak2d.mov}}
+%%       %      \only<+>{\includemovie[controls,poster]{\textwidth}{\textwidth}{sloshbox3d.mov}}
+%%       \only<+>{\includemovie[controls,poster]{\textwidth}{\textwidth}{obstacle3d.mov}}
+%%       %      \only<+>{\includemovie[controls,poster]{\textwidth}{\textwidth}{embankment.mov}}
+%%     \end{overlayarea}
+%%   \end{minipage}
+%% \end{frame}
+
 \begin{frame}
   \frametitle{Verification and Validation Test Problems}
-  \begin{minipage}{0.5\textwidth}
     \bit
   \item Dam break experiments
   \item Marin free surface flow/object experiment
@@ -205,17 +269,18 @@
   \item Rotating Gaussian
   \item Advection in a vortex
   \item Porous media, slope stability,...
-    %\item Poisseulle, Couette, and Decay of Vortex (low RE analytical solutions) 2D \& 3D
+  \item Poisseulle, Couette, and Decay of Vortex (low RE analytical solutions) 2D \& 3D
     \eit
-  \end{minipage}\begin{minipage}{0.5\textwidth}
-    \begin{overlayarea}{\textwidth}{\textwidth}
-      \only<+>{\includemovie[controls,poster]{\textwidth}{\textwidth}{sloshbox2d.mov}}
-      %      \only<+>{\includemovie[controls,poster]{\textwidth}{\textwidth}{dambreak2d.mov}}
-      %      \only<+>{\includemovie[controls,poster]{\textwidth}{\textwidth}{sloshbox3d.mov}}
-      \only<+>{\includemovie[controls,poster]{\textwidth}{\textwidth}{obstacle3d.mov}}
-      %      \only<+>{\includemovie[controls,poster]{\textwidth}{\textwidth}{embankment.mov}}
-    \end{overlayarea}
-  \end{minipage}
+\end{frame}
+
+\begin{frame}
+\frt{Two-phase flow (prototype, parallel)}
+\includemovie[controls,poster]{\textwidth}{0.7\textwidth}{sloshbox2d.mov}
+\end{frame}
+
+\begin{frame}
+\frt{Two-phase flow (optimized, parallel, 2.5M tets)}
+\includemovie[controls,poster]{\textwidth}{0.7\textwidth}{obstacle3d.mov}
 \end{frame}
 
 %7
@@ -299,7 +364,7 @@
 Our target problems are systems of nonlinear equations governing the
 transport of an abstract vector of components $u_j,j=1,\ldots,n_c$:
 \begin{equation*}
-\pd{m^i}{t} + \deld \pl \vec f^i - \sum_k \ten{a}^{ik} \grad \phi^k
+\pd{m^i}{t} + \deld \pl \vec f^i - \sum_k^{n_c} \ten{a}^{ik} \grad \phi^k
 \pr + r^i + h^i(\grad u) = 0
 \end{equation*}
 where $i=1,\ldots n_c$. The large majority of models in hydrology are
@@ -333,31 +398,36 @@ module), \alert{n-file} (numerics module), and \alert{batch} file.
 
 \begin{frame}
 \frametitle{\texttt{ladr\_2d\_p.py}} \small
-\lstinputlisting{ladr_2d_p.py}
+%\lstinputlisting{ladr_2d_p.py}
+\inputminted[linenos]{python}{ladr_2d_p.py}
 \end{frame}
 
 \begin{frame}
 \frametitle{\texttt{ladr\_2d\_c0p1\_n.py}}
 \small
-\lstinputlisting{ladr_2d_c0p1_n.py}
+%\lstinputlisting{ladr_2d_c0p1_n.py}
+\inputminted[linenos]{python}{ladr_2d_c0p1_n.py}
 \end{frame}
 
-\begin{frame}
-\frametitle{A multi-physics example}
-\small
-\lstinputlisting{twp_navier_stokes_sloshbox_2d_so.py}
-\end{frame}
+%\begin{frame}
+%\frametitle{A multi-physics example}
+%\small
+%\lstinputlisting{twp_navier_stokes_sloshbox_2d_so.py}
+%\inputminted[linenos]{python}{twp_navier_stokes_sloshbox_2d_so.py}
+%\end{frame}
 
 \begin{frame}
 \frametitle{\texttt{adr.py}}
 \small
-\lstinputlisting[lastline=12]{adr.py}
+%\lstinputlisting[lastline=12]{adr.py}
+\inputminted[linenos,lastline=12]{python}{adr.py}
 \end{frame}
 
 \begin{frame}
 \frametitle{\texttt{adr.py, cont'd}}
 \small
-\lstinputlisting[firstline=13]{adr.py}
+%\lstinputlisting[firstline=13]{adr.py}
+\inputminted[linenos,firstline=13]{python}{adr.py}
 \end{frame}
 
 \section{Lessons Learned and Open Issues}
@@ -367,7 +437,7 @@ module), \alert{n-file} (numerics module), and \alert{batch} file.
 \begin{itemize}
 \item Coefficient storage dictionary layout is easy to use only in
   Python.
-\item Optimized C and Fortran coefficient routines have (very ugly)
+\item Optimized C and Fortran coefficient routines have a very ugly,
   problem-specific interface.
 \item Optimized discretizations must use yet another interface.
 \end{itemize}
